@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Security Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    video {
+      width: auto; /* Ensure the video fills the container */
+      height: 400px; /* Maintain aspect ratio */
+      display: block; /* Remove any default inline styling */
+    }
+    .camera {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+    .camera button {
+      margin-right: 2vw;
+      width:100px;
+      height:35px;
+      padding:8x;
+      border:none;
+      border-radius:15px;
+      background-color:orangered;
+      color:white;
+    }
+    table {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .verify{
+      width:160px;
+      height:35px;
+    }
+    #image{
+      width:320px;
+      height:230px;
+    }
+    #start,#capture{
+      width:120px;
+      height:30px;
+      background-color:whitesmoke;
+      border:1px solid grey;
+      border-radius:15px;
+    }
+    .input{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      margin-top:4vw;
+    }
+    .input div{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:center;
+    }
+    .camera{
+      display:flex;
+      flex-direction:column;
+    }
+    .buttons{
+      display:flex;
+      flex-direction:row;
+    }
+    .student_image {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 1vw;
+    }
+    .data {
+      display: flex;
+      flex-direction: row;
+    }
+    .data div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .data div h5 {
+      color: black;
+      font-size: 1rem;
+    }
+    .data div h5:hover {
+      text-decoration: none;
+    }
+    .card {
+      margin-bottom: 1vw;
+    }
+    .content{
+      font-weight:bold;
+
+    }
+    .heading{
+      margin-left:9%;
+      margin-bottom:0px;
+    }
+    .main{
+      display:flex;
+      flex-direction:row;
+      align-items:center;
+      justify-content:space-evenly;
+    }
+    video {
+      width: 50vw; 
+      max-width: 100%; 
+      height: auto; 
+      display: block;
+    }
+    #capture-btn {
+      width: 100%;
+      height: 40px; 
+      border: none;
+      border-radius: 10px;
+      background-color: green;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer; 
+      transition:
+      background-color 0.3s ease;
+    }
+  </style>
+</head>
+<script type="text/javascript" charset="utf-8" src="https://riversun.github.io/webcam.js/example/00_overview/js/webcam.js"></script>
+<body>
+  <div class="container">
+    <nav class="navbar navbar-expand-lg bg-light m-2 fs-5 rounded-pill">
+      <div class="container-fluid">
+        <span class="navbar-text me-auto" style="font-family: georgia; color: blue;">Security Section</span>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active mx-3 text-4" aria-current="page" href="{{url_for('outingOut')}}">Outing Out</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active mx-3 text-4" aria-current="page" href="#">Outing in</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active mx-3 text-4" aria-current="page" href="{{url_for('leaveOut')}}">Leave Out</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active mx-3 text-4" aria-current="page" href="{{url_for('leaveIn')}}">Leave In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active mx-3 text-4" aria-current="page" href="{{url_for('outingsAndleaves')}}">Outings&Leaves</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+       
+        <div>
+          <video id="video" width="640" height="480" autoplay></video><br><br>
+          <input type="text" class="form-control" id="idnumber" placeholder="Enter ID Number"><br><br>
+          <button id="capture-btn">Capture</button>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div>
+          <h5 class="heading">Outing In's</h5>
+          <div class="container mt-3" id="outings-container">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function displayPopupModal() {
+      document.getElementById("popupModal").style.display = "block";
+    }
+    function redirectToSecurityPage() {
+      window.location.href = "{{url_for('security')}}";
+    }
+  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+        async function init() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+            } catch (err) {
+                console.error('Error accessing webcam:', err);
+            }
+        }
+        async function capture() {
+          const video = document.getElementById('video');
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const context = canvas.getContext('2d');
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const imageDataURL = canvas.toDataURL('image/png');
+          
+          const idNumber = document.getElementById('idnumber').value; 
+          if (!idNumber) {
+            alert("Please enter the ID number before capturing.");
+            return;
+          }
+          try {
+            const response = await fetch('/verify_outing_in', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              body: new URLSearchParams({
+                image: imageDataURL,
+                idNumber: idNumber ,
+              })
+            });
+            
+            const responseData = await response.json();
+            alert(responseData.message);
+          } catch (error) {
+            console.error('Error sending image to server:', error);
+          }
+        }
+        
+        window.onload = init;
+        document.getElementById('capture-btn').addEventListener('click', capture);
+  </script>
+  <script>
+    $(document).ready(function() {
+      function fetchAndDisplayData() {
+          $.ajax({
+              url: "/fetch_Outing_in_data",
+              method: "GET",
+              success: function(response) {
+                  displayOutings(response.outings);
+              },
+              error: function(xhr, status, error) {
+                  console.error("Error fetching data:", error);
+              }
+          });
+      }
+      function displayOutings(outings) {
+          var outingsContainer = $("#outings-container");
+          outingsContainer.empty(); 
+          outings.forEach(function(outing, index) {
+              var cardHtml = `
+                  <div class="card outing">
+                      <div class="card-header" id="outing_heading_${index}">
+                          <h5 class="mb-0">
+                              <button class="btn btn-link" data-toggle="collapse" data-target="#outing_collapse_${index}" aria-expanded="true" aria-controls="outing_collapse_${index}">
+                                  <div class="data">
+                                      <img class="student_image" src="https://intranet.rguktn.ac.in/SMS/usrphotos/user/${outing[1]}.jpg">
+                                      <div>
+                                          <h5 id="id">${outing[1]}</h5>
+                                          <h5>${outing[2]}</h5>
+                                      </div>
+                                  </div>
+                              </button>
+                          </h5>
+                      </div>
+                      <div id="outing_collapse_${index}" class="collapse" aria-labelledby="outing_heading_${index}" data-parent="#outings-container">
+                          <div class="card-body">
+                              <div>
+                                <label class="content">Gender: </label><label>${outing[3]}</label>
+                              </div>
+                              <div>
+                                <label class="content">Branch:</label><label>${outing[4]}</label>
+                              </div>
+                              <div>
+                                <label class="content">mobile:</label><label>${outing[5]}</label>
+                              </div>
+                              <div>
+                                <label class="content">parentName:</label><label>${outing[6]}</label>
+                              </div>
+                              <div>
+                                <label class="content">address:</label><label>${outing[7]}</label>
+                              </div>
+                              <div>
+                                <label class="content">OutTime:</label><label>${outing[8]}</label>
+                              </div>
+                              <div>
+                                <label class="content">inTime:</label><label>${outing[9]}</label>
+                              </div>
+                            <div>  
+                              <label class="content">Reason:</label><label>${outing[11]}</label>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+              `;
+              outingsContainer.append(cardHtml);
+          });
+      }
+      fetchAndDisplayData(); 
+      setInterval(fetchAndDisplayData,10000); });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-3RP4ji+5FT4zLyRz3F8JUINM0FClbap7d80YVs9JgCJDAHjoXuXcI3c1p3lC+Yyl" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-YwDx8+UOoc0owW3XNfrzKU5z4SSoyH2IasqDJ8rFCZ7vSiT3v+3doDZ7A/F0wwRj" crossorigin="anonymous"></script>
+ </script>
+</body>
+</html>
